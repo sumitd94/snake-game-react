@@ -36,7 +36,7 @@ const CanvasBoard = (): JSX.Element => {
       ref={canvasBoardRef}
       width={CANVAS_WIDTH}
       height={CANVAS_HEIGHT}
-      className='canvas-board rounded-2xl'
+      className='canvas-board rounded-2xl w-full'
     />
   );
 };

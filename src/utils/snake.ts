@@ -94,10 +94,10 @@ export const drawSnake = (
   };
 };
 
-export const moveSnake = (setScore: any) => {
+export const moveSnake = () => {
   const { canvasContext } = useCanvasStore?.getState?.() ?? {};
 
-  const { snake, direction, timer, food, setSnake } =
+  const { snake, score, direction, timer, food, setSnake, setScore } =
     useSnakeStore?.getState?.() ?? {};
 
   if (canvasContext) {
@@ -120,7 +120,7 @@ export const moveSnake = (setScore: any) => {
     if (head.x === food.foodX && head.y === food.foodY) {
       // snake has eaten the food and we want to generate a new food position
       generateFoodForSnake(snakeCoordinate);
-      setScore((prevScore: number) => prevScore + 10);
+      setScore(score + 10);
     } else {
       // removes the tail
       snakeCoordinate.pop();

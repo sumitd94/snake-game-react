@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 
+import { shallow } from 'zustand/shallow';
 import { CanvasBoard } from './Canvas';
 import { useSnakeStore } from './store';
 import { RIGHT, LEFT, UP, DOWN } from './AppConstants';
@@ -14,9 +15,21 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 
 const App = () => {
-  const { setDirection, setTimer, snake } = useSnakeStore?.getState?.() ?? {};
+  // const { setDirection, setTimer, snake } = useSnakeStore?.getState?.() ?? {};
 
-  const [score, setScore] = useState(0);
+  const { score, snake, setDirection, setTimer } = useSnakeStore(
+    (state) => ({
+      setDirection: state.setDirection,
+      setTimer: state.setTimer,
+      snake: state.snake,
+      score: state.score,
+    }),
+    shallow
+  );
+
+  // const [score, setScore] = useState(0);
+
+  console.log(score);
 
   const handleKeyDownEvent = ({ keyCode }: { keyCode: number }) => {
     switch (keyCode) {
@@ -42,8 +55,8 @@ const App = () => {
     generateFoodForSnake(snake);
 
     const timer = setInterval(() => {
-      moveSnake(setScore);
-    }, 600);
+      moveSnake();
+    }, 200);
 
     // storing the timer so that we can clear it when the game ends
     setTimer(timer);
