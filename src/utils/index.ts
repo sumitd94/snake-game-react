@@ -1,4 +1,4 @@
-import { hasGameEnded } from './game';
+import { hasGameEnded, handleGameOverModalClose } from './game';
 import { clearCanvas } from './canvas';
 
-export { hasGameEnded, clearCanvas };
+export { hasGameEnded, clearCanvas, handleGameOverModalClose };

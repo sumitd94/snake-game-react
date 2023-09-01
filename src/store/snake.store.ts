@@ -12,6 +12,7 @@ interface SnakeState {
   direction: string;
   timer?: NodeJS.Timer;
   score: number;
+  gameOver: boolean;
   setSnake: (value: SnakeCoordinate[]) => void;
   setDx: (value: number) => void;
   setDy: (value: number) => void;
@@ -19,6 +20,7 @@ interface SnakeState {
   setTimer: (value: NodeJS.Timer) => void;
   setFood: (food: { foodX: number; foodY: number }) => void;
   setScore: (value: number) => void;
+  setGameOver: (value: boolean) => void;
 }
 
 const useSnakeStore = create<SnakeState>()(
@@ -30,6 +32,7 @@ const useSnakeStore = create<SnakeState>()(
       direction: 'RIGHT',
       food: { foodX: 0, foodY: 0 },
       score: 0,
+      gameOver: false,
       setSnake: (value): void => set({ snake: value }),
       setDx: (value): void => set({ dx: value }),
       setDy: (value): void => set({ dy: value }),
@@ -37,6 +40,7 @@ const useSnakeStore = create<SnakeState>()(
       setTimer: (value): void => set({ timer: value }),
       setFood: (value): void => set({ food: value }),
       setScore: (value): void => set({ score: value }),
+      setGameOver: (value): void => set({ gameOver: value }),
     }),
     { enabled: true }
   )

@@ -5,31 +5,37 @@ import { shallow } from 'zustand/shallow';
 import { CanvasBoard } from './Canvas';
 import { useSnakeStore } from './store';
 import { RIGHT, LEFT, UP, DOWN } from './AppConstants';
-import { moveSnake } from './utils/snake';
 
-import { generateFoodForSnake } from './utils/snake';
+import { generateFoodForSnake, moveSnake } from './utils/snake';
+import { handleGameOverModalClose } from './utils';
 
 import InfoIcon from '@mui/icons-material/Info';
 
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+import { Modal, Tooltip, IconButton, Typography, Box } from '@mui/material';
+
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const App = () => {
-  // const { setDirection, setTimer, snake } = useSnakeStore?.getState?.() ?? {};
-
-  const { score, snake, setDirection, setTimer } = useSnakeStore(
+  const { score, snake, setDirection, setTimer, gameOver } = useSnakeStore(
     (state) => ({
       setDirection: state.setDirection,
       setTimer: state.setTimer,
       snake: state.snake,
       score: state.score,
+      gameOver: state.gameOver,
     }),
     shallow
   );
-
-  // const [score, setScore] = useState(0);
-
-  console.log(score);
 
   const handleKeyDownEvent = ({ keyCode }: { keyCode: number }) => {
     switch (keyCode) {
@@ -50,13 +56,12 @@ const App = () => {
 
   useEffect(() => {
     document.onkeydown = handleKeyDownEvent;
-    console.log('test');
     // generates Initial food for the snake
     generateFoodForSnake(snake);
 
     const timer = setInterval(() => {
       moveSnake();
-    }, 200);
+    }, 100);
 
     // storing the timer so that we can clear it when the game ends
     setTimer(timer);
@@ -70,7 +75,7 @@ const App = () => {
     <div className='App flex justify-center w-4/5 m-auto h-screen items-center flex-col'>
       <div className='flex items-center justify-center'>
         <h1>Hola! Let's see how many apples can you eat</h1>
-        <Tooltip title='Each apple you eat, your life span increases by 10 days'>
+        <Tooltip title='Each apple you eat, your healthy life span increases by 10 days'>
           <IconButton>
             <InfoIcon />
           </IconButton>
@@ -78,6 +83,23 @@ const App = () => {
       </div>
       <div>{`Increased your life span by - ${score} Days`}</div>
       <CanvasBoard />
+      <Modal
+        open={gameOver}
+        onClose={handleGameOverModalClose}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <Box sx={style}>
+          <Typography id='modal-modal-title' variant='h6' component='h2'>
+            Oops!
+          </Typography>
+          <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+            {score === 0
+              ? 'Looks like you dont like apples, you were not able to increase your life span'
+              : `Not bad, you were able to increase your life span by ${score} Days`}
+          </Typography>
+        </Box>
+      </Modal>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import {
   DOWN,
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
+  SNAKE,
 } from '../AppConstants';
 import { SnakeCoordinate } from '../types';
 import AppleIcon from '../assets/images/red-apple.svg';
@@ -74,14 +75,17 @@ const getHorizontalVertivalVelocityForSnake = (direction: string) => {
 
 export const drawSnake = (
   canvasContext: CanvasRenderingContext2D,
-  snake: SnakeCoordinate[]
+  snake: SnakeCoordinate[],
+  isReset?: boolean
 ) => {
   const appleSvgImage = new Image();
   appleSvgImage.src = AppleIcon;
 
+  const snakeToUse = isReset ? SNAKE : snake;
+
   appleSvgImage.onload = () => {
     if (canvasContext) {
-      snake?.forEach((snakeCoordinate) => {
+      snakeToUse?.forEach((snakeCoordinate) => {
         canvasContext.drawImage(
           appleSvgImage,
           snakeCoordinate.x,
@@ -97,22 +101,37 @@ export const drawSnake = (
 export const moveSnake = () => {
   const { canvasContext } = useCanvasStore?.getState?.() ?? {};
 
-  const { snake, score, direction, timer, food, setSnake, setScore } =
-    useSnakeStore?.getState?.() ?? {};
+  const {
+    snake,
+    score,
+    direction,
+    timer,
+    food,
+    setSnake,
+    setScore,
+    setGameOver,
+  } = useSnakeStore?.getState?.() ?? {};
 
   if (canvasContext) {
+    const snakeCoordinate = [...snake];
+
     if (hasGameEnded(snake[0])) {
+      // clears the timer that moved the snake
       clearInterval(timer);
-      console.log('game over');
+      // clearing canvas and re-drawing the snake
+      clearCanvas();
+      drawSnake(canvasContext, snakeCoordinate, true);
+      drawFood(food.foodX, food.foodY);
+
+      // updating game over to true to show the modal
+      setGameOver(true);
+
       return;
     }
-
-    const snakeCoordinate = [...snake];
 
     const { dx, dy } = getHorizontalVertivalVelocityForSnake(direction);
 
     const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-    console.log(head);
 
     // adds the new head in front of the snake
     snakeCoordinate.unshift(head);
