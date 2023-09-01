@@ -98,6 +98,12 @@ const App = () => {
               ? 'Looks like you dont like apples, you were not able to increase your life span'
               : `Not bad, you were able to increase your life span by ${score} Days`}
           </Typography>
+          <Typography
+            className='italic'
+            style={{ marginTop: '16px', fontWeight: 'bold' }}
+          >
+            Note: Close the modal & refresh the page for now to reset the game!
+          </Typography>
         </Box>
       </Modal>
     </div>
